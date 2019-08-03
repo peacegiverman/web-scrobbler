@@ -6,6 +6,7 @@
 require.config({
 	baseUrl: '/core/background',
 	paths: {
+		ui: '/ui',
 		md5: '/vendor/md5.min',
 		vendor: '/vendor',
 		jquery: '/vendor/jquery.min',

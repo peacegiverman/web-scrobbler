@@ -25,16 +25,29 @@ h1, h2, h3, h4, h5 {
 	color: #ba0d07;
 }
 
-.btn-primary {
+.badge-primary {
+	background-color: #d51007;
+}
+
+.btn-outline-primary {
+	border-color: #d51007;
+	color: #d51007;
+}
+.btn-primary,
+.btn-primary.disabled,
+.btn-primary:disabled {
 	background-color: #d51007;
 	border-color: #d51007;
 }
-.btn-primary:hover {
+.btn-primary:not(:disabled):not(.disabled):hover,
+.btn-outline-primary:not(:disabled):not(.disabled):hover {
 	background-color: #ba0d07;
 	border-color: #ba0d07;
 }
 .btn-primary.focus,
 .btn-primary:focus,
+.btn-outline-primary:not(:disabled):not(.disabled).active:focus,
+.btn-outline-primary:not(:disabled):not(.disabled):active:focus,
 .btn-primary:not(:disabled):not(.disabled).active:focus,
 .btn-primary:not(:disabled):not(.disabled):active:focus {
 	box-shadow: 0 0 0 0.2rem rgba(178,12,7, 0.5);
@@ -42,7 +55,8 @@ h1, h2, h3, h4, h5 {
 .btn-primary.focus,
 .btn-primary:focus,
 .btn-primary:not(:disabled):not(.disabled):active,
-.btn-primary:not(:disabled):not(.disabled).active {
+.btn-primary:not(:disabled):not(.disabled).active,
+.btn-outline-primary:not(:disabled):not(.disabled):active {
 	background-color: #b20c07;
 	border-color: #b20c07;
 }

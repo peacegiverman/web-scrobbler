@@ -651,5 +651,27 @@
   "hotkeyUnloveSong": {
     "message": "Unlove now playing song",
     "description": "Hotkey label"
+  },
+
+
+  "unscrobbledTracks": {
+    "message": "Unscrobbled tracks",
+    "description": "Scrobble storage header"
+  },
+  "buttonScrobbleAll": {
+    "message": "Scrobble all",
+    "description": "Button label"
+  },
+  "buttonEdit": {
+    "message": "Edit",
+    "description": "Button label"
+  },
+  "buttonScrobble": {
+    "message": "Scrobble",
+    "description": "Button label"
+  },
+  "buttonRemove": {
+    "message": "Remove",
+    "description": "Button label"
   }
 }

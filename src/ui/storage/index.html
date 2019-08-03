@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+		<title i18n="unscrobbledTracks">Unscrobbled tracks</title>
+
+		<link href="/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+
+		<link rel="stylesheet" type="text/css" href="/ui/base.css" />
+		<link rel="stylesheet" type="text/css" href="index.css" />
+
+		<script src="/vendor/require.js"></script>
+		<script src="/core/background/requirejs-config.js"></script>
+		<script src="/ui/storage/index.js"></script>
+		<script src="/core/i18n.js"></script>
+	</head>
+
+	<body>
+		<div id="root" class="container">
+			<div>
+				<h3 data-i18n="unscrobbledTracks"></h3>
+				<p id="unscrobbled-tracks-description">
+					Here you can view, edit, scrobble or remove all of tracks
+					were not scrobbled.
+				</p>
+				<p id="no-unscrobbled-tracks-description" hidden>
+					You have no unscrobbled tracks.
+				</p>
+
+				<div class="mb-4" id="btn-controls">
+					<button
+						type="button"
+						class="btn btn-primary"
+						id="btn-scrobble-all"
+						data-i18n="buttonScrobbleAll"
+					></button>
+					<button
+						type="button"
+						class="btn btn-secondary"
+						id="btn-clear"
+						data-i18n="buttonClear"
+					></button>
+				</div>
+			</div>
+
+			<ul class="list-group mb-4" id="song-list"></ul>
+		</div>
+
+		<div
+			class="modal fade"
+			id="edit-song"
+			tabindex="-1"
+			role="dialog"
+			aria-labelledby="edit-song"
+			aria-hidden="true"
+		>
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 id="edit-song-title" class="modal-title">
+							Edit song
+						</h5>
+						<button
+							type="button"
+							class="close"
+							data-dismiss="modal"
+							aria-label="Close"
+						>
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="recipient-name">Artist</label>
+							<input
+								type="text"
+								class="form-control"
+								id="edit-song-artist"
+								data-i18n-placeholder="infoArtistPlaceholder"
+							/>
+						</div>
+						<div class="form-group">
+							<label for="message-text">Track</label>
+							<input
+								type="text"
+								class="form-control"
+								id="edit-song-track"
+								data-i18n-placeholder="infoTrackPlaceholder"
+							/>
+						</div>
+						<div class="form-group">
+							<label for="message-text">Album</label>
+							<input
+								type="text"
+								class="form-control"
+								id="edit-song-album"
+								data-i18n-placeholder="infoAlbumPlaceholder"
+							/>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button
+							type="button"
+							class="btn btn-secondary"
+							data-dismiss="modal"
+							data-i18n="buttonCancel"
+						></button>
+						<button
+							type="button"
+							class="btn btn-primary"
+							data-dismiss="modal"
+							id="edit-song-btn-ok"
+							data-i18n="buttonOk"
+						></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

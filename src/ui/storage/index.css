@@ -1,0 +1,10 @@
+.container {
+	margin: auto;
+	max-width: 768px;
+	padding: 30px;
+}
+
+hr {
+	margin-bottom: 0.25rem;
+	margin-top: 0.5rem;
+}
