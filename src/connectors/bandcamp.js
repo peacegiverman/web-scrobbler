@@ -15,7 +15,19 @@ const filter = new MetadataFilter({
 	all: MetadataFilter.removeZeroWidth,
 });
 
-$('audio').bind('playing pause timeupdate', Connector.onStateChanged);
+const audioElement = document.getElementsByTagName('audio')[0];
+
+setupEventListeners();
+
+/*
+ * Default implementation for all pages except home page.
+ */
+Connector.getUniqueID = () => {
+	const audioSrc = audioElement.getAttribute('src');
+	const audioIdMatch = /&id=(\d+)&/.exec(audioSrc);
+
+	return audioIdMatch ? audioIdMatch[1] : null;
+};
 
 if (isAlbumPage()) {
 	Util.debugLog('Init props for album player');
@@ -54,17 +66,7 @@ Connector.getArtistTrack = () => {
 	return { artist, track };
 };
 
-Connector.isPlaying = () => $('.playing').length > 0;
-
-/*
- * Default implementation for all pages except home page.
- */
-Connector.getUniqueID = () => {
-	const audioSrc = $('audio').first().attr('src');
-	const audioIdMatch = /&id=(\d+)&/.exec(audioSrc);
-
-	return audioIdMatch ? audioIdMatch[1] : null;
-};
+Connector.isPlaying = () => document.querySelector('.playing') !== null;
 
 Connector.applyFilter(filter);
 
@@ -137,14 +139,14 @@ function initPropertiesForHomePage() {
 	];
 
 	Connector.getUniqueID = () => {
-		if ($('.bcweekly.playing').length) {
-			const pageData = $('#pagedata').data('blob');
+		if (document.querySelector('.bcweekly.playing') !== null) {
+			const pageData = getData('#pagedata', 'data-blob');
 
 			const showId = pageData.bcw_show.show_id;
 			const currentShowId = +location.search.match(/show=(\d+)?/)[1];
 
 			if (currentShowId === showId) {
-				const currentTrackIndex = $('.bcweekly-current').data('index');
+				const currentTrackIndex = Util.getAttrFromSelectors('.bcweekly-current', 'data-index');
 				return pageData.bcw_show.tracks[currentTrackIndex].track_id;
 			}
 		}
@@ -162,7 +164,7 @@ function isSongPage() {
 }
 
 function isCollectionsPage() {
-	return $('#carousel-player').length > 0;
+	return document.querySelector('#carousel-player') !== null;
 }
 
 function isArtistVarious(artist, track) {
@@ -171,7 +173,7 @@ function isArtistVarious(artist, track) {
 	 * Example: https://krefeld8ung.bandcamp.com/album/krefeld-8ung-vol-1
 	 */
 	if (isAlbumPage()) {
-		const trackNodes = $('.track_list span[itemprop="name"]').toArray();
+		const trackNodes = document.querySelectorAll('.track_list span[itemprop="name"]');
 		for (const trackNode of trackNodes) {
 			const trackName = trackNode.textContent;
 			if (!Util.findSeparator(trackName, SEPARATORS)) {
@@ -198,7 +200,24 @@ function isArtistVarious(artist, track) {
 }
 
 function getPageType() {
-	return $('meta[property="og:type"]').attr('content');
+	return Util.getAttrFromSelectors('meta[property="og:type"]', 'content');
+}
+
+function setupEventListeners() {
+	const events = ['playing', 'pause', 'timeupdate'];
+	for (const event of events) {
+		audioElement.addEventListener(event, Connector.onStateChanged);
+	}
+}
+
+function getData(selector, attr) {
+	const element = document.querySelector(selector);
+	if (element) {
+		const rawData = element.getAttribute(attr);
+		return JSON.parse(rawData);
+	}
+
+	return {};
 }
 
 /*

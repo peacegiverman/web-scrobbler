@@ -1,12 +1,16 @@
 'use strict';
 
 const playerBar = '.Root__now-playing-bar';
+const connectBar = '.ConnectBar';
+
+const artistSelector = `${playerBar} [dir="auto"]:last-child a`;
+const deviceNameSelector = '.ConnectBar__device-name';
 
 Connector.useMediaSessionApi();
 
 Connector.playerSelector = playerBar;
 
-Connector.artistSelector = `${playerBar} [dir="auto"]:last-child a`;
+Connector.artistSelector = artistSelector;
 
 Connector.trackSelector = `${playerBar} [dir="auto"]:first-child a`;
 
@@ -29,7 +33,7 @@ function isMusicPlaying() {
 }
 
 function artistUrlIncludes(...strings) {
-	const artistUrl = $(Connector.artistSelector).attr('href');
+	const artistUrl = Util.getAttrFromSelectors(artistSelector, 'href');
 
 	if (artistUrl) {
 		for (const str of strings) {
@@ -43,9 +47,9 @@ function artistUrlIncludes(...strings) {
 }
 
 function isMainTab() {
-	const multipleSources = $('.ConnectBar').length > 0;
+	const multipleSources = document.querySelector(connectBar) !== null;
 	if (multipleSources) {
-		const deviceName = $('.ConnectBar__device-name').text();
+		const deviceName = Util.getTextFromSelectors(deviceNameSelector);
 		return !deviceName.includes('Web Player');
 	}
 

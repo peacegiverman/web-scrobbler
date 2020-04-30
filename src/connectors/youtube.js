@@ -1,21 +1,8 @@
 'use strict';
 
-/**
- * Array of categories allowed to be scrobbled.
- * @type {Array}
- */
 const allowedCategories = [];
-
-/**
- * "Video Id=Category" map.
- * @type {Map}
- */
 const categoryCache = new Map();
 
-/**
- * CSS selector of video element. It's common for both players.
- * @type {String}
- */
 const videoSelector = '.html5-main-video';
 
 const videoTitleSelector = '.html5-video-player .ytp-title-link';
@@ -89,15 +76,15 @@ Connector.getTrackInfo = () => {
  * state may not be considered empty.
  */
 Connector.getCurrentTime = () => {
-	return $(videoSelector).prop('currentTime');
+	return getVideoProp('currentTime');
 };
 
 Connector.getDuration = () => {
-	return $(videoSelector).prop('duration');
+	return getVideoProp('duration');
 };
 
 Connector.isPlaying = () => {
-	return $('.html5-video-player').hasClass('playing-mode');
+	return Util.hasElementClass('.html5-video-player', 'playing-mode');
 };
 
 Connector.getUniqueID = () => {
@@ -106,16 +93,16 @@ Connector.getUniqueID = () => {
 	 * if the miniplayer is visible, so we should check
 	 * if URL of a current video in miniplayer is accessible.
 	 */
-	const miniPlayerVideoUrl = $('ytd-miniplayer[active] [selected] a').attr('href');
+	const miniPlayerVideoUrl = Util.getAttrFromSelectors('ytd-miniplayer[active] [selected] a', 'href');
 	if (miniPlayerVideoUrl) {
 		return Util.getYtVideoIdFromUrl(miniPlayerVideoUrl);
 	}
 
-	return $('ytd-watch-flexy').attr('video-id');
+	return Util.getAttrFromSelectors('ytd-watch-flexy', 'video-id');
 };
 
 Connector.isScrobblingAllowed = () => {
-	if ($('.ad-showing').length > 0) {
+	if (document.querySelector('.ad-showing') !== null) {
 		return false;
 	}
 
@@ -143,7 +130,16 @@ Connector.isScrobblingAllowed = () => {
 Connector.applyFilter(MetadataFilter.getYoutubeFilter());
 
 function setupEventListener() {
-	$(videoSelector).on('timeupdate', Connector.onStateChanged);
+	// TODO Add MutationObserver
+	const videoElement = document.querySelector(videoSelector);
+	if (videoElement) {
+		videoElement.addEventListener('click', Connector.onStateChanged);
+	}
+}
+
+function getVideoProp(prop) {
+	const videoElement = document.querySelector(videoSelector);
+	return videoElement && videoElement[prop];
 }
 
 /**
@@ -182,7 +178,7 @@ async function fetchCategoryId() {
 
 	let ytChannelUrls = [];
 	for (const selector of categorySelectors) {
-		ytChannelUrls = $(selector);
+		ytChannelUrls = document.querySelectorAll(selector);
 		if (ytChannelUrls.length > 0) {
 			break;
 		}
@@ -191,10 +187,10 @@ async function fetchCategoryId() {
 	if (ytChannelUrls.length === 0) {
 		return CATEGORY_UNKNOWN;
 	} else if (ytChannelUrls.length === 1) {
-		return ytChannelUrls.attr('href');
+		return ytChannelUrls[0].getAttribute('href');
 	}
-	for (const data of ytChannelUrls) {
-		const ytChannelUrl = $(data).attr('href');
+	for (const node of ytChannelUrls) {
+		const ytChannelUrl = node.getAttribute('href');
 		if (CATEGORIES.includes(ytChannelUrl)) {
 			return ytChannelUrl;
 		}
@@ -208,13 +204,17 @@ async function fillMoreSection() {
 		return new Promise((resolve) => setTimeout(resolve, ms));
 	}
 
-	const ytShowLessText = $('yt-formatted-string.less-button').text();
-	const ytShowMoreText = $('yt-formatted-string.more-button').text();
+	const showLessButton = document.querySelector('yt-formatted-string.less-button');
+	const showMoreButton = document.querySelector('yt-formatted-string.more-button');
+
+	const ytShowLessText = showLessButton.textContent;
+	const ytShowMoreText = showMoreButton.textContent;
+
+	showLessButton.textContent = ytShowMoreText;
 
 	// Apply global style to prevent "More/Less" button flickering.
-	$('yt-formatted-string.less-button').text(ytShowMoreText);
-	const styleTag = $(`
-		<style id="tmp-style">
+	const style =
+		`<style id="tmp-style">
 			ytd-metadata-row-container-renderer {
 				visibility: hidden;
 			}
@@ -228,20 +228,21 @@ async function fillMoreSection() {
 			yt-formatted-string.less-button {
 				margin-top: 0 !important;
 			}
-		</style>
-	`);
-	$('html > head').append(styleTag);
+		</style>`;
+	const styleElement = document.createElement('style');
+	styleElement.append(document.createTextNode(style));
+	document.head.append(styleElement);
 
 	// Open "More" section.
-	$('yt-formatted-string.more-button').click();
+	showMoreButton.click();
 	await waitForClick();
 
 	// Close "More" section.
-	$('yt-formatted-string.less-button').click();
+	showLessButton.click();
 
+	showLessButton.textContent = ytShowLessText;
 	// Remove global style.
-	$('yt-formatted-string.less-button').text(ytShowLessText);
-	$('#tmp-style').remove();
+	styleElement.remove();
 }
 
 /**
@@ -258,7 +259,7 @@ async function readConnectorOptions() {
 }
 
 function getVideoDescription() {
-	return $('#description').text();
+	return Util.getTextFromSelectors('#description');
 }
 
 function getTrackInfoFromDescription() {
