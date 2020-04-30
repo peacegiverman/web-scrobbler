@@ -14,8 +14,7 @@ Connector.artistSelector = '[class*=RebrandPlayerSliderComponent__Artist]';
 Connector.trackSelector = '[class*=RebrandPlayerSliderComponent__Track]';
 
 Connector.isPlaying = () => {
-	const trackIcon = $(trackIconSelector);
-	return !trackIcon.hasClass(trackIconPausedClass);
+	return !Util.hasElementClass(trackIconSelector, trackIconPausedClass);
 };
 
 Connector.isStateChangeAllowed = () => {
