@@ -54,7 +54,7 @@ define((require) => {
 		fileInput.accept = '.json';
 		fileInput.acceptCharset = 'utf-8';
 
-		document.body.appendChild(fileInput);
+		document.body.append(fileInput);
 		fileInput.initialValue = fileInput.value;
 		fileInput.onchange = readFile;
 		fileInput.click();

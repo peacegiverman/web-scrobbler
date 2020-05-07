@@ -58,7 +58,7 @@ function localizeElement(element) {
 					const nodes = makeNodes(text);
 					if (nodes) {
 						nodes.forEach((n) => {
-							element.appendChild(n);
+							element.append(n);
 						});
 					} else {
 						// Fallback
