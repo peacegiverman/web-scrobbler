@@ -31,7 +31,7 @@ define((require) => {
 			const isConnectorEnabled = !(id in disabledConnectors);
 			checkbox.checked = isConnectorEnabled;
 
-			container.appendChild(entry);
+			container.append(entry);
 		});
 
 		const toggleCheckBox = document.getElementById('toggle');
@@ -56,7 +56,7 @@ define((require) => {
 		configLink.setAttribute('href', '#conn-conf-modal');
 		configLink.setAttribute('data-conn', index);
 		configLink.setAttribute('data-toggle', 'modal');
-		configLink.appendChild(icon);
+		configLink.append(icon);
 
 		const configCheckBox = document.createElement('input');
 		configCheckBox.setAttribute('type', 'checkbox');
@@ -69,9 +69,7 @@ define((require) => {
 
 		const container = document.createElement('div');
 		container.classList.add('connector-config');
-		container.appendChild(configLink);
-		container.appendChild(configCheckBox);
-		container.appendChild(configLabel);
+		container.append(configLink, configCheckBox, configLabel);
 
 		return container;
 	}

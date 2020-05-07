@@ -55,7 +55,7 @@ define((require) => {
 			const percentOption = document.createElement('option');
 			percentOption.textContent = `${val}%`;
 
-			scrobblePercentElem.appendChild(percentOption);
+			scrobblePercentElem.append(percentOption);
 		}
 		scrobblePercentElem.selectedIndex = percentValues.indexOf(
 			await Options.getOption(Options.SCROBBLE_PERCENT)

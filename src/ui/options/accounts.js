@@ -58,7 +58,7 @@ define((require) => {
 		accountContainer.classList.add('list-group-item');
 
 		const accountsList = document.getElementById('accounts-wrapper');
-		accountsList.appendChild(accountContainer);
+		accountsList.append(accountContainer);
 	}
 
 	async function fillAccountContainer(scrobbler) {
@@ -128,9 +128,7 @@ define((require) => {
 		}
 
 		accountBody.innerHTML = '';
-		accountBody.appendChild(label);
-		accountBody.appendChild(authStr);
-		accountBody.appendChild(buttons);
+		accountBody.append(label, authStr, buttons);
 	}
 
 	function fillPropsDialog(scrobbler) {
@@ -214,8 +212,7 @@ define((require) => {
 			input.type = type;
 		}
 
-		formGroup.appendChild(label);
-		formGroup.appendChild(input);
+		formGroup.append(label, input);
 		return formGroup;
 	}
 

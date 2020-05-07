@@ -86,7 +86,7 @@ define((require) => {
 		const cacheSize = Object.keys(data).length;
 
 		if (cacheSize === 0) {
-			cacheDom.appendChild(createNoEditedLabel());
+			cacheDom.append(createNoEditedLabel());
 		} else {
 			for (const songId in data) {
 				const { artist, track, album } = data[songId];
@@ -99,12 +99,12 @@ define((require) => {
 					const cacheSize = Object.keys(data).length;
 
 					if (cacheSize === 0) {
-						cacheDom.appendChild(createNoEditedLabel());
+						cacheDom.append(createNoEditedLabel());
 					}
 					updateViewEditedDialogTitle(cacheSize);
 				});
 
-				cacheDom.appendChild(liItem);
+				cacheDom.append(liItem);
 			}
 		}
 
@@ -145,7 +145,7 @@ define((require) => {
 		const patternsList = document.getElementById(patternsListId);
 		const inputContainer = createNewInputContainer();
 
-		patternsList.appendChild(inputContainer);
+		patternsList.append(inputContainer);
 		inputContainer.getElementsByTagName('input')[0].focus();
 	}
 
@@ -169,11 +169,10 @@ define((require) => {
 
 		const inputAppend = document.createElement('div');
 		inputAppend.classList.add('input-group-append');
-		inputAppend.appendChild(closeButton);
+		inputAppend.append(closeButton);
 
 		container.classList.add('input-group');
-		container.appendChild(input);
-		container.appendChild(inputAppend);
+		container.append(input, inputAppend);
 
 		return container;
 	}
@@ -190,7 +189,8 @@ define((require) => {
 			liItem.setAttribute('title', title);
 		}
 
-		liItem.appendChild(removeBtn);
+		liItem.append(removeBtn);
+
 		return liItem;
 	}
 

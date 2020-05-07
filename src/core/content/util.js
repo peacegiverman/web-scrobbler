@@ -536,9 +536,9 @@ const Util = {
 		const script = document.createElement('script');
 		script.src = scriptUrl;
 		script.onload = function() {
-			this.parentNode.removeChild(this);
+			this.remove();
 		};
-		(document.head || document.documentElement).appendChild(script);
+		(document.head || document.documentElement).append(script);
 	},
 
 	/**
