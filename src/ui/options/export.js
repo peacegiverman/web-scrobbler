@@ -56,7 +56,7 @@ define((require) => {
 
 		document.body.append(fileInput);
 		fileInput.initialValue = fileInput.value;
-		fileInput.onchange = readFile;
+		fileInput.addEventListener('change', readFile);
 		fileInput.click();
 
 		function readFile() {
