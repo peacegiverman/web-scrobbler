@@ -535,9 +535,9 @@ const Util = {
 	injectScriptIntoDocument(scriptUrl) {
 		const script = document.createElement('script');
 		script.src = scriptUrl;
-		script.onload = function() {
+		script.addEventListener('load', function() {
 			this.remove();
-		};
+		});
 		(document.head || document.documentElement).append(script);
 	},
 
