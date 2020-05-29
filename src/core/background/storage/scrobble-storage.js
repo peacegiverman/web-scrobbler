@@ -12,6 +12,9 @@ define((require) => {
 			this.storage = BrowserStorage.getStorage(
 				BrowserStorage.SCROBBLE_STORAGE
 			);
+			/* @ifdef DEBUG */
+			this.storage.debugLog();
+			/* @endif */
 		}
 
 		/** @override */

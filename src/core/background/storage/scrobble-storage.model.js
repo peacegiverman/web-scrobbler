@@ -16,6 +16,11 @@ define(() => {
 			await this.setEntry(entryId, entryData);
 		}
 
+		async getEntry(entryId) {
+			const storageData = await this.getDataFromStorage();
+			return storageData[entryId];
+		}
+
 		async getEntries() {
 			return await this.getDataFromStorage();
 		}
