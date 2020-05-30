@@ -11,6 +11,7 @@ define((require) => {
 	const ScrobbleService = require('object/scrobble-service');
 	const ServiceCallResult = require('object/service-call-result');
 	const SavedEdits = require('storage/saved-edits');
+	const ScrobbleStorage = require('storage/scrobble-storage');
 
 	/**
 	 * List of song fields used to check if song is changed. If any of
@@ -247,7 +248,11 @@ define((require) => {
 		 * Process connector state as new one.
 		 * @param {Object} newState Connector state
 		 */
-		processNewState(newState) {
+		async processNewState(newState) {
+			if (await this.isNeedToAddSongToScrobbleStorage()) {
+				ScrobbleStorage.addSong(this.currentSong);
+			}
+
 			/*
 			 * We've hit a new song (or replaying the previous one)
 			 * clear any previous song and its bindings.
@@ -443,6 +448,24 @@ define((require) => {
 		}
 
 		/**
+		 * Check if the current song should be saved to the scrobble storage.
+		 *
+		 * @return {Boolean} Check result
+		 */
+		async isNeedToAddSongToScrobbleStorage() {
+			if (this.currentSong && !this.currentSong.isValid()) {
+				const secondsToScrobble = await this.getSecondsToScrobble(
+					this.currentSong.getDuration()
+				);
+				if (secondsToScrobble !== -1) {
+					return this.playbackTimer.getElapsed() >= secondsToScrobble;
+				}
+			}
+
+			return false;
+		}
+
+		/**
 		 * Update song duration value.
 		 * @param  {Number} duration Duration in seconds
 		 */
@@ -466,9 +489,7 @@ define((require) => {
 				return;
 			}
 
-			const percent = await Options.getOption(Options.SCROBBLE_PERCENT);
-			const secondsToScrobble = Util.getSecondsToScrobble(duration, percent);
-
+			const secondsToScrobble = await this.getSecondsToScrobble(duration);
 			if (secondsToScrobble !== -1) {
 				this.playbackTimer.update(secondsToScrobble);
 				this.replayDetectionTimer.update(duration);
@@ -531,6 +552,11 @@ define((require) => {
 				this.debugLog('Scrobbling failed', 'warn');
 				this.setMode(ControllerMode.Err);
 			}
+		}
+
+		async getSecondsToScrobble(duration) {
+			const percent = await Options.getOption(Options.SCROBBLE_PERCENT);
+			return Util.getSecondsToScrobble(duration, percent);
 		}
 
 		reset() {
