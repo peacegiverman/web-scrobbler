@@ -5,15 +5,16 @@ define(() => {
 		/* Public methods */
 
 		async addSong(song) {
-			const entryData = {
+			const storageData = await this.getDataFromStorage();
+			const entryId = ScrobbleStorageModel.generateEntryId();
+
+			storageData[entryId] = {
 				artist: song.getArtist(),
 				track: song.getTrack(),
 				album: song.getAlbum(),
 				timestamp: song.metadata.startTimestamp,
 			};
-
-			const entryId = ScrobbleStorageModel.generateEntryId();
-			await this.setEntry(entryId, entryData);
+			await this.saveDataToStorage(storageData);
 		}
 
 		async getEntry(entryId) {
@@ -32,9 +33,14 @@ define(() => {
 			await this.saveDataToStorage(storageData);
 		}
 
-		async updateEntry(entryId, artist, track, album) {
-			const entryData = { artist, track, album };
-			await this.setEntry(entryId, entryData);
+		async updateEntry(entryId, entryData) {
+			const storageData = await this.getDataFromStorage();
+
+			for (const key in entryData) {
+				storageData[entryId][key] = entryData[key];
+			}
+
+			await this.saveDataToStorage(storageData);
 		}
 
 		/* Functions must be implemented */
@@ -71,15 +77,6 @@ define(() => {
 		 */
 		async saveDataToStorage(/* data */) {
 			throw new Error('This function must be overridden!');
-		}
-
-		/* Private methods */
-
-		async setEntry(entryId, entryData) {
-			const storageData = await this.getDataFromStorage();
-
-			storageData[entryId] = entryData;
-			await this.saveDataToStorage(storageData);
 		}
 
 		/* Static methods */

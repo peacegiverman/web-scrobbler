@@ -27,7 +27,7 @@ define((require) => {
 			const entryId = this.view.getEditedSongId();
 			const { artist, track, album } = this.view.getEditedSong();
 
-			await ScrobbleStorage.updateEntry(entryId, artist, track, album);
+			await ScrobbleStorage.updateEntry(entryId, { artist, track, album });
 
 			this.view.updateEntry(entryId, artist, track, album);
 		}
