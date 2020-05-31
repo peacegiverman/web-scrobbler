@@ -21,8 +21,6 @@
  *    @param  {Boolean} isLoved Flag indicates song is loved
  *  - REQUEST_RESET_SONG: Reset corrected song info
  *  - REQUEST_SKIP_SONG: Ignore (don't scrobble) current song
- *  - REQUEST_AUTHENTICATE: Authenticate scrobbler
- *    @param  {String} scrobbler Scrobbler label
  */
 
 define((require) => {
@@ -90,7 +88,7 @@ define((require) => {
 			browser.runtime.onMessage.addListener((request) => {
 				const { tabId, type, data } = request;
 
-				return this.processMessage(tabId, type, data);
+				return this.tabWorker.processMessage(tabId, type, data);
 			});
 
 			try {
@@ -125,39 +123,6 @@ define((require) => {
 					return this.tabWorker.processPortMessage(tabId, type, data);
 				});
 			});
-		}
-
-		/**
-		 * Called when something sent message to the background script
-		 * via `browser.runtime.sendMessage` function.
-		 *
-		 * @param  {Number} tabId ID of a tab to which the message is addressed
-		 * @param  {String} type Message type
-		 * @param  {Object} data Object contains data sent in the message
-		 */
-		async processMessage(tabId, type, data) {
-			const requestTypes = [
-				'REQUEST_AUTHENTICATE',
-				'REQUEST_APPLY_USER_OPTIONS',
-				'REQUEST_SIGN_OUT',
-			];
-			if (!requestTypes.includes(type)) {
-				return this.tabWorker.processMessage(tabId, type, data);
-			}
-
-			const scrobbler = ScrobbleService.getScrobblerByLabel(data.label);
-			if (!scrobbler) {
-				console.log(`Unknown scrobbler: ${data.label}`);
-				return;
-			}
-
-			if (type === 'REQUEST_AUTHENTICATE') {
-				this.authenticateScrobbler(scrobbler);
-			} else if (type === 'REQUEST_APPLY_USER_OPTIONS') {
-				await this.applyUserProperties(scrobbler, data.userProps);
-			} else if (type === 'REQUEST_SIGN_OUT') {
-				await scrobbler.signOut();
-			}
 		}
 
 		/**

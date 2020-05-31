@@ -7,8 +7,10 @@ const propsModalOkBtnId = 'scrobbler-ok';
 
 define((require) => {
 	const { getCurrentTab } = require('util/util-browser');
-	const { i18n, runtime, tabs } = require('webextension-polyfill');
-	const ScrobbleService = require('object/scrobble-service');
+	const { extension, i18n, runtime, tabs } = require('webextension-polyfill');
+
+	const { webScrobbler } = extension.getBackgroundPage();
+	const ScrobbleService = webScrobbler.getScrobbleService();
 
 	const scrobblerPropertiesMap = {
 		ListenBrainz: {
@@ -120,8 +122,8 @@ define((require) => {
 
 			const logoutBtn = createButton('accountsSignOut');
 			logoutBtn.addEventListener('click', async () => {
-				await requestSignOut(scrobbler);
-				fillAccountContainer(scrobbler);
+				await scrobbler.signOut();
+				await fillAccountContainer(scrobbler);
 			});
 
 			buttons.append(logoutBtn);
@@ -182,7 +184,8 @@ define((require) => {
 
 			userProps[propId] = value;
 		}
-		await requestApplyUserProps(scrobbler, userProps);
+
+		await scrobbler.applyUserProperties(userProps);
 		fillAccountContainer(scrobbler);
 	}
 
@@ -220,26 +223,6 @@ define((require) => {
 		runtime.sendMessage({
 			type: 'REQUEST_AUTHENTICATE',
 			data: { label: scrobbler.getLabel() },
-		});
-	}
-
-	function requestApplyUserProps(scrobbler, userProps) {
-		// FIXME Called for local instance update
-		scrobbler.applyUserProperties(userProps);
-
-		const label = scrobbler.getLabel();
-		return runtime.sendMessage({
-			type: 'REQUEST_APPLY_USER_OPTIONS', data: { label, userProps },
-		});
-	}
-
-	function requestSignOut(scrobbler) {
-		// FIXME Called for local instance update
-		scrobbler.signOut();
-
-		const label = scrobbler.getLabel();
-		return runtime.sendMessage({
-			type: 'REQUEST_SIGN_OUT', data: { label },
 		});
 	}
 
