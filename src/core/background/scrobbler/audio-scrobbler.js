@@ -116,25 +116,26 @@ define((require) => {
 		}
 
 		/** @override */
-		async sendNowPlaying(song) {
+		async sendNowPlaying(songInfo) {
+			const { artist, track, album, albumArtist, duration } = songInfo;
 			const { sessionID } = await this.getSession();
 			const params = {
+				track,
+				artist,
 				method: 'track.updatenowplaying',
-				track: song.getTrack(),
-				artist: song.getArtist(),
 				sk: sessionID,
 			};
 
-			if (song.getAlbum()) {
-				params.album = song.getAlbum();
+			if (album) {
+				params.album = album;
 			}
 
-			if (song.getAlbumArtist()) {
-				params.albumArtist = song.getAlbumArtist();
+			if (albumArtist) {
+				params.albumArtist = albumArtist;
 			}
 
-			if (song.getDuration()) {
-				params.duration = song.getDuration();
+			if (duration) {
+				params.duration = duration;
 			}
 
 			const response = await this.sendRequest({ method: 'POST' }, params);
@@ -142,22 +143,23 @@ define((require) => {
 		}
 
 		/** @override */
-		async scrobble(song) {
+		async scrobble(songInfo) {
+			const { artist, track, album, albumArtist, timestamp } = songInfo;
 			const { sessionID } = await this.getSession();
 			const params = {
 				method: 'track.scrobble',
-				'timestamp[0]': song.metadata.startTimestamp,
-				'track[0]': song.getTrack(),
-				'artist[0]': song.getArtist(),
+				'timestamp[0]': timestamp,
+				'track[0]': track,
+				'artist[0]': artist,
 				sk: sessionID,
 			};
 
-			if (song.getAlbum()) {
-				params['album[0]'] = song.getAlbum();
+			if (album) {
+				params['album[0]'] = album;
 			}
 
-			if (song.getAlbumArtist()) {
-				params['albumArtist[0]'] = song.getAlbumArtist();
+			if (albumArtist) {
+				params['albumArtist[0]'] = albumArtist;
 			}
 
 			const response = await this.sendRequest({ method: 'POST' }, params);
@@ -180,12 +182,13 @@ define((require) => {
 		}
 
 		/** @override */
-		async toggleLove(song, isLoved) {
+		async toggleLove(songInfo, isLoved) {
+			const { artist, track } = songInfo;
 			const { sessionID } = await this.getSession();
 			const params = {
+				track,
+				artist,
 				method: isLoved ? 'track.love' : 'track.unlove',
-				track: song.getTrack(),
-				artist: song.getArtist(),
 				sk: sessionID,
 			};
 

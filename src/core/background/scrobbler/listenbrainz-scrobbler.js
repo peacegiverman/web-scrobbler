@@ -123,9 +123,9 @@ define((require) => {
 		}
 
 		/** @override */
-		async sendNowPlaying(song) {
+		async sendNowPlaying(songInfo) {
 			const { sessionID } = await this.getSession();
-			const trackMeta = this.makeTrackMetadata(song);
+			const trackMeta = this.makeTrackMetadata(songInfo);
 
 			const params = {
 				listen_type: 'playing_now',
@@ -139,15 +139,15 @@ define((require) => {
 		}
 
 		/** @override */
-		async scrobble(song) {
+		async scrobble(songInfo) {
 			const { sessionID } = await this.getSession();
 
 			const params = {
 				listen_type: 'single',
 				payload: [
 					{
-						listened_at: song.metadata.startTimestamp,
-						track_metadata: this.makeTrackMetadata(song),
+						listened_at: songInfo.timestamp,
+						track_metadata: this.makeTrackMetadata(songInfo),
 					},
 				],
 			};
@@ -265,23 +265,25 @@ define((require) => {
 			return ServiceCallResult.RESULT_OK;
 		}
 
-		makeTrackMetadata(song) {
+		makeTrackMetadata(songInfo) {
+			const { artist, track, album, albumArtist, originUrl } = songInfo;
+
 			const trackMeta = {
-				artist_name: song.getArtist(),
-				track_name: song.getTrack(),
+				artist_name: artist,
+				track_name: track,
 				additional_info: {},
 			};
 
-			if (song.getAlbum()) {
-				trackMeta.release_name = song.getAlbum();
+			if (album) {
+				trackMeta.release_name = album;
 			}
 
-			if (song.getOriginUrl()) {
-				trackMeta.additional_info.origin_url = song.getOriginUrl();
+			if (originUrl) {
+				trackMeta.additional_info.origin_url = originUrl;
 			}
 
-			if (song.getAlbumArtist()) {
-				trackMeta.additional_info.release_artist_name = song.getAlbumArtist();
+			if (albumArtist) {
+				trackMeta.additional_info.release_artist_name = albumArtist;
 			}
 
 			return trackMeta;

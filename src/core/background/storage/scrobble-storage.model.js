@@ -4,16 +4,11 @@ define(() => {
 	class ScrobbleStorageModel {
 		/* Public methods */
 
-		async addSong(song) {
+		async addSong(songInfo) {
 			const storageData = await this.getDataFromStorage();
 			const entryId = ScrobbleStorageModel.generateEntryId();
 
-			storageData[entryId] = {
-				artist: song.getArtist(),
-				track: song.getTrack(),
-				album: song.getAlbum(),
-				timestamp: song.metadata.startTimestamp,
-			};
+			storageData[entryId] = songInfo;
 			await this.saveDataToStorage(storageData);
 		}
 

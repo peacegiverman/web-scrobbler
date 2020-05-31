@@ -112,47 +112,47 @@ define((require) => {
 		/** API requests */
 
 		/**
-		 * Send current song as 'now playing' to API.
+		 * Send a now playing request.
 		 * Implementation must return ServiceCallResult constant.
 		 *
-		 * @param  {Object} song Song instance
+		 * @param  {Object} songInfo Object containing song info
 		 */
 		// eslint-disable-next-line no-unused-vars
-		async sendNowPlaying(song) {
+		async sendNowPlaying(songInfo) {
 			throw new Error('This function must be overridden!');
 		}
 
 		/**
-		 * Send song to API to scrobble.
+		 * Send a scrobble request.
 		 * Implementation must return ServiceCallResult constant.
 		 *
-		 * @param  {Object} song Song instance
+		 * @param  {Object} songInfo Object containing song info
 		 */
 		// eslint-disable-next-line no-unused-vars
-		async scrobble(song) {
+		async scrobble(songInfo) {
 			throw new Error('This function must be overridden!');
 		}
 
 		/**
-		 * Love or unlove given song.
+		 * Send an (un)love request.
 		 * Implementation must return ServiceCallResult constant.
 		 *
-		 * @param  {Object} song Song instance
+		 * @param  {Object} songInfo Object containing song info
 		 * @param  {Boolean} isLoved Flag means song should be loved or not
 		 */
 		// eslint-disable-next-line no-unused-vars
-		async toggleLove(song, isLoved) {
+		async toggleLove(songInfo, isLoved) {
 			throw new Error('This function must be overridden!');
 		}
 
 		/**
-		 * Get song info.
+		 * Get information about song.
 		 * Implementation must return object contains a song data.
 		 *
-		 * @param  {Object} song Song instance
+		 * @param  {Object} songInfo Object containing song info
 		 */
 		// eslint-disable-next-line no-unused-vars
-		async getSongInfo(song) {
+		async getSongInfo(songInfo) {
 			throw new Error('This function must be overridden!');
 		}
 

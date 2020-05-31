@@ -179,7 +179,7 @@ define((require) => {
 				throw new Error('No valid song is now playing');
 			}
 
-			await ScrobbleService.toggleLove(this.currentSong, isLoved);
+			await ScrobbleService.toggleLove(this.currentSong.getInfo(), isLoved);
 
 			this.currentSong.setLoveStatus(isLoved, { force: true });
 			this.onSongUpdated();
@@ -250,7 +250,7 @@ define((require) => {
 		 */
 		async processNewState(newState) {
 			if (await this.isNeedToAddSongToScrobbleStorage()) {
-				ScrobbleStorage.addSong(this.currentSong);
+				ScrobbleStorage.addSong(this.currentSong.getInfo());
 			}
 
 			/*
@@ -509,7 +509,7 @@ define((require) => {
 		async setSongNowPlaying() {
 			this.currentSong.flags.isMarkedAsPlaying = true;
 
-			const results = await ScrobbleService.sendNowPlaying(this.currentSong);
+			const results = await ScrobbleService.sendNowPlaying(this.currentSong.getInfo());
 			if (Util.isAnyResult(results, ServiceCallResult.RESULT_OK)) {
 				this.debugLog('Song set as now playing');
 				this.setMode(ControllerMode.Playing);
@@ -535,7 +535,7 @@ define((require) => {
 		 * to be scrobbled.
 		 */
 		async scrobbleSong() {
-			const results = await ScrobbleService.scrobble(this.currentSong);
+			const results = await ScrobbleService.scrobble(this.currentSong.getInfo());
 			if (Util.isAnyResult(results, ServiceCallResult.RESULT_OK)) {
 				this.debugLog('Scrobbled successfully');
 
