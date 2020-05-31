@@ -19,6 +19,7 @@ require(['extension', 'util/migrate'], (...modules) => {
 	const [Extension, Migrate] = modules;
 
 	Migrate.migrate().then(() => {
-		new Extension().start();
+		window.webScrobbler = new Extension();
+		window.webScrobbler.start();
 	});
 });

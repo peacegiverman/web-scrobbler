@@ -80,6 +80,10 @@ define((require) => {
 			GA.pageview(`/background-loaded?version=${this.extVersion}`);
 		}
 
+		getScrobbleService() {
+			return ScrobbleService;
+		}
+
 		/** Private functions. */
 
 		initializeListeners() {
