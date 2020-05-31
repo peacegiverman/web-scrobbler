@@ -1,7 +1,14 @@
 'use strict';
 
 define((require) => {
+	const { extension } = require('webextension-polyfill');
+
 	const ScrobbleStorage = require('storage/scrobble-storage');
+	const { RESULT_OK } = require('object/service-call-result');
+	const { areAllResults } = require('util/util');
+
+	const { webScrobbler } = extension.getBackgroundPage();
+	const ScrobbleService = webScrobbler.getScrobbleService();
 
 	class StoragePresenter {
 		constructor(view) {
@@ -43,11 +50,17 @@ define((require) => {
 			}, 1000);
 		}
 
-		onScrobbleButonClicked(entryId) {
-			// Imitate scrobbling with a network delay
-			setTimeout(() => {
+		async onScrobbleButonClicked(entryId) {
+			const songInfo = await ScrobbleStorage.getEntry(entryId);
+			const results = await ScrobbleService.scrobble(songInfo);
+
+			// TODO Update once results have scrobbler ID attached
+			if (areAllResults(results, RESULT_OK)) {
 				this.removeEntry(entryId);
-			}, 500);
+			} else {
+				// TODO Move textId to view
+				this.view.showErrorAlert('unableToScrobble');
+			}
 		}
 
 		/** Private methods */
